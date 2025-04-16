@@ -45,7 +45,7 @@ model Customer {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user  User   @relation(fields: [email], references: [email])
+  user  User   @relation(fields: [email], references: [id])
   bikes Bike[]
 
   @@map("customers")
