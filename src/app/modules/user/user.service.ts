@@ -1,21 +1,32 @@
-import { UserRole } from "../../../../generated/prisma"
-import prisma from "../../../shared/prisma"
-
+import { create } from "domain";
+import { UserRole } from "../../../../generated/prisma";
+import prisma from "../../../shared/prisma";
 
 const createCustomer = async (payload: any) => {
-   const userData = {
+  const userData = {
     email: payload.email,
-  
-    role: UserRole.USER
-   }
+    role: UserRole.USER,
+  };
 
-   const result = await prisma.user.create({
-    data: userData  
-})
+  //transaction-1 to create user intoDB
+  const result = await prisma.$transaction(async (txClient) => {
+    await txClient.user.create({
+      data: userData,
+    });
 
-return result
-}
+    const createCustomer = await txClient.customer.create({
+      data: {
+        name: payload.name,
+        email: payload.email,
+        phone: payload.phone,
+      },
+    });
+    return createCustomer
+  });
+
+  return result;
+};
 
 export const userService = {
-    createCustomer
-}
+  createCustomer,
+};
