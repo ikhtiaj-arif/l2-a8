@@ -1,10 +1,18 @@
 import { Request, Response } from "express";
 import { userService } from "./user.service";
+import catchAsync from "../../../shared/catchAsync";
+import sendResponse from "../../../shared/sendResponse";
+import httpStatus from "http-status";
 
-const createCustomer = async (req: Request, res: Response) => {
+const createCustomer = catchAsync(async (req: Request, res: Response) => {
   const result = await userService.createCustomer(req.body);
-  res.send({ result });
-};
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Customer created successfully",
+    data: result,
+  });
+});
 
 export const userController = {
     createCustomer,
