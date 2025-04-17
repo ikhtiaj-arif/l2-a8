@@ -33,6 +33,8 @@ const updateCustomer = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+
 const deleteCustomer = catchAsync(async (req, res) => {
   await customerService.deleteCustomer(req.params.id);
   sendResponse(res, {

@@ -1,11 +1,12 @@
 import prisma from "../../../shared/prisma";
+import { ICustomer } from "./customer.interface";
 
-const getCustomerFromDB = async () => {
+const getCustomerFromDB = async (): Promise<ICustomer[]> => {
   const result = await prisma.customer.findMany({});
   return result;
 };
 
-const getCustomerById = async (customerId: string) => {
+const getCustomerById = async (customerId: string): Promise<ICustomer> => {
   const result = prisma.customer.findUniqueOrThrow({
     where: {
       customerId,
@@ -15,7 +16,10 @@ const getCustomerById = async (customerId: string) => {
   return result;
 };
 
-const updateCustomer = async (customerId: string, payload: any) => {
+const updateCustomer = async (
+  customerId: string,
+  payload: Partial<ICustomer>
+): Promise<ICustomer> => {
   await prisma.customer.findUniqueOrThrow({
     where: { customerId },
   });
@@ -30,7 +34,9 @@ const updateCustomer = async (customerId: string, payload: any) => {
   return result;
 };
 
-const deleteCustomer = async (customerId: string) => {
+const deleteCustomer = async (
+  customerId: string
+): Promise<ICustomer | null> => {
   const deletedCustomer = await prisma.customer.findUniqueOrThrow({
     where: { customerId },
   });
