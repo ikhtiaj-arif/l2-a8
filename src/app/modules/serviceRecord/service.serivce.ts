@@ -1,6 +1,7 @@
 import prisma from "../../../shared/prisma";
+import { IServiceRecord } from "./service.interface";
 
-const createService = async (payload: any) => {
+const createService = async (payload: IServiceRecord): Promise<IServiceRecord> => {
   // return payload
 
   const bikeId = payload.bikeId;
@@ -18,12 +19,12 @@ const createService = async (payload: any) => {
   return result;
 };
 
-const getAllServices = async () => {
+const getAllServices = async (): Promise<IServiceRecord[]> => {
   const result = await prisma.serviceRecord.findMany({});
   return result;
 };
 
-const getServiceById = async (serviceId: string) => {
+const getServiceById = async (serviceId: string): Promise<IServiceRecord> => {
   const result = await prisma.serviceRecord.findUniqueOrThrow({
     where: {
       serviceId,
@@ -32,7 +33,10 @@ const getServiceById = async (serviceId: string) => {
   return result;
 };
 
-const updateService = async (serviceId: string, payload: any) => {
+const updateService = async (
+  serviceId: string,
+  payload: Partial<IServiceRecord>
+): Promise<IServiceRecord> => {
   await prisma.serviceRecord.findUniqueOrThrow({
     where: {
       serviceId,
