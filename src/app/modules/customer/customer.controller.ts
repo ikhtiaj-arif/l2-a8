@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { customerService } from "./customer.service";
+import httpStatus from "http-status";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
-import httpStatus from "http-status";
+import { customerService } from "./customer.service";
 
 const getCustomerFromDB = catchAsync(async (req: Request, res: Response) => {
   const result = await customerService.getCustomerFromDB();
@@ -33,9 +33,19 @@ const updateCustomer = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const deleteCustomer = catchAsync(async (req, res) => {
+  await customerService.deleteCustomer(req.params.id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Customer deleted successfully",
+    data: null,
+  });
+});
 
 export const customerController = {
   getCustomerFromDB,
   getCustomerById,
-  updateCustomer
+  updateCustomer,
+  deleteCustomer,
 };

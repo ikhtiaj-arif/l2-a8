@@ -9,5 +9,6 @@ router.get("/", customerController.getCustomerFromDB);
 router.get("/:id", customerController.getCustomerById);
 
 router.put("/:id", customerController.updateCustomer);
+router.delete("/:id", customerController.deleteCustomer);
 
 export const customerRoutes = router;
