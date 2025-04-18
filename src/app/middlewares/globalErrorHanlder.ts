@@ -8,7 +8,7 @@ const globalErrorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-const service = err.meta.modelName
+const service = err?.meta?.modelName || "Service";
   let stack =
     process.env.STATUS === "development"
       ? err.stack

@@ -12,7 +12,7 @@ const createServiceRecordZodSchema = z.object({
 
 const updateServiceRecordZodSchema = z.object({
   body: z.object({
-    completionDate: z.string(),
+    completionDate: z.string().optional(),
   }),
 });
 

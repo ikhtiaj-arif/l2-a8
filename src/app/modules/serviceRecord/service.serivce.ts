@@ -1,7 +1,9 @@
 import prisma from "../../../shared/prisma";
 import { IServiceRecord } from "./service.interface";
 
-const createService = async (payload: IServiceRecord): Promise<IServiceRecord> => {
+const createService = async (
+  payload: IServiceRecord
+): Promise<IServiceRecord> => {
   // return payload
 
   const bikeId = payload.bikeId;
@@ -23,6 +25,22 @@ const getAllServices = async (): Promise<IServiceRecord[]> => {
   const result = await prisma.serviceRecord.findMany({});
   return result;
 };
+const getPendingServices = async () => {
+  const date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+  const result = await prisma.serviceRecord.findMany({
+    where: {
+      status: {
+        in: ["pending", "in-progress"],
+      },
+      serviceDate: {
+        lte: date,
+      },
+    },
+  });
+
+  return result;
+};
 
 const getServiceById = async (serviceId: string): Promise<IServiceRecord> => {
   const result = await prisma.serviceRecord.findUniqueOrThrow({
@@ -35,7 +53,7 @@ const getServiceById = async (serviceId: string): Promise<IServiceRecord> => {
 
 const updateService = async (
   serviceId: string,
-  payload: Partial<IServiceRecord>
+  payload: Partial<IServiceRecord> | undefined | null
 ): Promise<IServiceRecord> => {
   await prisma.serviceRecord.findUniqueOrThrow({
     where: {
@@ -43,14 +61,20 @@ const updateService = async (
     },
   });
 
-  if (!payload.completionDate) {
-    throw new Error("Completion date is required");
+  if (payload?.completionDate) {
+    const result = await prisma.serviceRecord.update({
+      where: {
+        serviceId,
+      },
+      data: { completionDate: payload.completionDate, status: "done" },
+    });
+    return result;
   }
   const result = await prisma.serviceRecord.update({
     where: {
       serviceId,
     },
-    data: { completionDate: payload.completionDate, status: "done" },
+    data: { completionDate: new Date().toISOString(), status: "done" },
   });
   return result;
 };
@@ -60,4 +84,5 @@ export const serviceRecordService = {
   getAllServices,
   getServiceById,
   updateService,
+  getPendingServices,
 };
