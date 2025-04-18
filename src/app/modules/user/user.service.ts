@@ -3,7 +3,7 @@ import { UserRole } from "../../../../generated/prisma";
 import prisma from "../../../shared/prisma";
 import { ICustomer } from "../customer/customer.interface";
 
-const createCustomer = async (payload: ICustomer) => {
+const createCustomer = async (payload: any) => {
   const userData = {
     email: payload.email,
     role: UserRole.USER,
